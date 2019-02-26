@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection"content="telephone=no"/>
+    <title>拖拽元素</title>
+    <style>
+        #div{
+            width: 100px;
+            height: 100px;
+            background-color: #ff4d92;
+            margin: 40px auto 0 auto;/*上右下左间距*/
+            line-height: 100px;/*行间距*/
+            text-align: center;
+            color: #ffffff;
+            font-size: large;
+        }
+        #container{
+            display:flex;/*display 属性规定元素应该生成的框的类型。flex 让所有弹性盒模型对象的子元素都有相同的长度，忽略它们内部的内容*/
+        }
+        #container>div{/*查找id值为dc这个容器中所有的div标签*/
+            height: 200px;
+            width: 200px;
+            flex: 1;
+            border: 1px solid #000000;
+            padding-top: 20px;
+            text-align: center;
+        }
+        #B{
+            height: 170px;
+            width: 100%;
+            background-color: #8a73ff;
+            font-size: larger;
+            text-align: center;
+            position: absolute;
+            top: 400px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <div>yellow</div>
+    <div>green</div>
+    <div>blue</div>
+    <div>black</div>
+</div>
+<div draggable="true" id="div">A</div>
+<div id="B">B</div>
+<script>
+    const [div,container,B]=[
+        document.getElementById('div'),//div是被拖拽元素
+        document.getElementById('container'), //container是接收目标容器
+        document.getElementById('B')
+    ];
+    div.ondragstart=function (e) { //ondragstart 在用户开始拖动元素时执行 JavaScript
+        div.innerHTML='dragstart';
+        container.style.backgroundColor='rgba(255,0,0,0.1)';//拖拽div时，容器改变颜色
+        e.dataTransfer.setData('id','div');//dataTransfer.setData() 方法设置被拖数据的数据类型和值
+    }
+    div.ondragend=function (e) { //ondragend用户完成元素拖动后触发
+        div.innerHTML='dragend';
+        container.style.backgroundColor='rgba(255,0,0,0)';
+    }
+    container.ondragenter=function (e) { //ondragenter - 当被鼠标拖动的对象进入其容器范围内时触发此事件
+        e.preventDefault();//阻止元素发生默认的行为
+        e.target.style.backgroundColor='rgba(255,0,0,0)';
+    }
+    B.ondragenter=function(e){
+        e.preventDefault();
+    }
+    //目标对象允许被拖拽元素拖拽进来 默认不允许
+    container.ondragover=function (e) { //ondragover - 当某被拖动的对象在另一对象容器范围内拖动时触发此事件
+        e.preventDefault();
+    }
+    B.ondragover=function(e){
+        e.preventDefault();
+    }
+    //目标对象接受被拖拽元素放下
+    container.ondrop=function (e) { //ondrop - 在一个拖动过程中，释放鼠标键时触发此事件
+        const target=e.target;
+        const id=e.dataTransfer.getData('id');
+        const div=document.getElementById(id);
+        div.style.backgroundColor=target.innerHTML;
+        target.appendChild(div);
+    }
+    B.ondrop=function (e) {
+        const target=e.target;
+        const id=e.dataTransfer.getData('id');
+        const div=document.getElementById(id);
+        target.appendChild(div);
+        target.style.backgroundColor=div.style.backgroundColor;
+    }
+</script>
+</body>
+</html>
