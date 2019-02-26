@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie的使用</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 生产环境中不建议使用 -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- <link rel="stylesheet" href="../../public/stylesheets/bootstrap.min.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <script src="../../public/javascripts/bootstrap.min.js"></script>
+    <script src="../../public/javascripts/babel.min.js"></script>
+    <script src="../../public/javascripts/react.development.js"></script>
+    <script src="../../public/javascripts/react-dom.development.js"></script>-->
+    <style>
+        body {
+            background-image: url("../../views/素材/convergedbg_v2_pdvUOT_2pyXH5ith335y8A2.jpg");
+        }
+    </style>
+</head>
+<body>
+<div id="Content"></div>
+<script type="text/babel">
+    class Table extends React.Component {
+        constructor()
+        {
+            super();
+            this.Submit=this.Submit.bind(this);
+            this.OpePass=this.OpePass.bind(this);
+            this.Close=this.Close.bind(this);
+        }
+        OpePass(e)
+        {
+            e.preventDefault();//代替return false
+        }
+        Submit()
+        {
+            document.cookie=encodeURI("用户名="+document.userregist.username.value);//set-Cookie:name=value;必须用"="
+            document.cookie=encodeURI("密码="+document.userregist.password.value);
+            alert("提交成功！");
+        }
+        Close()
+        {
+            var cookieString=decodeURI(document.cookie);
+            var cookieArray=cookieString.split(";");
+            for(var i=0;i<cookieArray.length;i++)
+            {
+                var cookieNum=cookieArray[i].split("=");
+                var cookieName=cookieNum[0];
+                var cookieValue=cookieNum[1];
+                console.log("Cookie 名称为："+cookieName+";Cookie值为："+cookieValue);
+            }
+            /*window.close();*/
+        }
+        render() {
+            return (
+                <div className="container" style={{padding: "10rem"}}>
+                    <form action="" method="post" name="userregist">
+                        <table className="table table-light">
+                            <thead className="thead-dark">
+                            <tr>
+                                <th colSpan="2">用户注册</th>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td align="right">用户名：</td>
+                                <td>
+                                    <input name="username" type="text"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">密码：</td>
+                                <td>
+                                    <input name="password" type="password" onPaste={this.OpePass}/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button type="button" className="btn btn-primary"
+                                            onClick={this.Submit}>保存
+                                    </button>&nbsp;
+                                    <button type="reset" className="btn btn-primary">重置
+                                    </button>&nbsp;
+                                    <button type="button" className="btn btn-secondary" onClick={this.Close}>关闭
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            )
+        }
+    }
+
+    class Test extends React.Component {
+        render() {
+            return (
+                <div className="container">
+                    <h2>表头颜色</h2>
+                    <p>.thead-dark 类用于给表头添加黑色背景， .thead-light 类用于给表头添加灰色背景:</p>
+                    <div className="table-responsive">
+                        <table className="table">
+                            <thead className="thead-dark">
+                            <tr>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>Email</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>John</td>
+                                <td>Doe</td>
+                                <td>john@example.com</td>
+                            </tr>
+                            <tr>
+                                <td>Mary</td>
+                                <td>Moe</td>
+                                <td>mary@example.com</td>
+                            </tr>
+                            <tr>
+                                <td>July</td>
+                                <td>Dooley</td>
+                                <td>july@example.com</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <table className="table">
+                        <thead className="thead-light">
+                        <tr>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>Email</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>John</td>
+                            <td>Doe</td>
+                            <td>john@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>Mary</td>
+                            <td>Moe</td>
+                            <td>mary@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>July</td>
+                            <td>Dooley</td>
+                            <td>july@example.com</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(
+        <Table/>,
+        document.getElementById("Content")
+    )
+</script>
+</body>
+</html>
