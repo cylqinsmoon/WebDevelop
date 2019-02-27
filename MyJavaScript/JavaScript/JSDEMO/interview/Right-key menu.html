@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta  name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>右键菜单</title>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        #menu {
+            position: fixed;
+        }
+        #drawing{
+            text-align: center;
+            width: 500px;
+            height: 500px;
+            border: 1px solid blue;
+            margin: 0 auto;
+            overflow: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/babel">
+    var menu;
+    var draw;
+    class Content extends React.Component{
+        constructor(props){
+            super(props);
+            this.state= {
+                visible: "none",
+                _left:"",
+                _top:""
+            };
+            //一定要写，虽然没在DOM上使用，但是写了才能和state交互
+            this._handleContextMenu=this._handleContextMenu.bind(this);
+            this._handleClick=this._handleClick.bind(this);
+        }
+        //绑定事件和函数
+        componentDidMount(){
+            menu=document.getElementById("menu");
+            draw=document.getElementById("drawing");
+            draw.addEventListener('contextmenu', this._handleContextMenu);
+            document.addEventListener('click', this._handleClick);
+        }
+        //移除事件
+        componentWillUnmount() {
+            draw.removeEventListener('contextmenu', this._handleContextMenu);
+            document.removeEventListener('click', this._handleClick);
+        }
+        //右键区域执行函数
+        _handleContextMenu(e) {
+            var e = e || window.event;
+            //鼠标点的坐标
+            var oX = e.clientX;
+            var oY = e.clientY;
+            //设置菜单可见性和出现后的位置
+            this.setState({
+                visible:"block",
+                _left:oX+"px",
+                _top:oY+"px"
+            });
+            //阻止浏览器默认事件
+            e.preventDefault();
+        }
+        _handleClick(){
+            this.setState({
+                visible:"none"
+            })
+        }
+        render(){
+            return(
+                <div>
+                    <div id="drawing"></div>
+                    <div id="menu" style={{display:this.state.visible,left:this.state._left,top:this.state._top}}>
+                        <div className="list-group">
+                            <a href="https://cn.bing.com/" className="list-group-item list-group-item-action">
+                                Cras justo odio
+                            </a>
+                            <a href="#" className="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                            <a href="#" className="list-group-item list-group-item-action">Morbi leo risus</a>
+                            <a href="#" className="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                            <a href="#" className="list-group-item list-group-item-action disabled" tabIndex="-1"
+                               aria-disabled="true">Vestibulum at eros</a>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(
+        <Content/>,
+        document.getElementById("content")
+    )
+</script>
+</body>
+</html>
