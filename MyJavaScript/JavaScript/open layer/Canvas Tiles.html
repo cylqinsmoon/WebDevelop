@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Tiles</title>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <link href="https://cdn.bootcss.com/openlayers/4.6.5/ol.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/openlayers/4.6.5/ol.js"></script>></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    //注意使用NPM加载open layer时，切片图层可以用TileLayer来加载
+    //import TileLayer from 'ol/layer/Tile.js';
+
+    //设置底图资源
+    var osmSource = new ol.source.OSM();
+    var map = new ol.Map({
+        //图层分两部分：底图资源和格网
+        layers: [
+            new ol.layer.Tile({
+                source: osmSource
+            }),
+            new ol.layer.Tile({
+                source: new ol.source.TileDebug({
+                    projection: 'EPSG:3857',
+                    tileGrid: osmSource.getTileGrid() //Return the tile grid of the tile source.
+                })
+            })
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: new ol.proj.fromLonLat([106.22, 38.536]),
+            zoom: 13 //放大级别和网格上的数字对应
+        })
+    });
+</script>
+</body>
+</html>

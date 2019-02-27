@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CartoDB source example</title>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <link href="https://cdn.bootcss.com/openlayers/4.6.5/ol.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/openlayers/4.6.5/ol.js"></script>
+    <script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script>
+    <script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js"></script>
+    <style>
+        body{
+            font-family: FontAwesome;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+        /*import Map from 'ol/Map.js';
+        import View from 'ol/View.js';
+        import TileLayer from 'ol/layer/Tile.js';
+        import {CartoDB, OSM} from 'ol/source.js';*/
+
+        //GeoJSON，GeoJSON is a standard format to encode geographic data using JSON.
+        var mapConfig = {
+            'layers': [{
+                'type': 'cartodb',
+                'options': {
+                    'cartocss_version': '2.1.1',
+                    'cartocss': '#layer { polygon-fill: #1a531b; }',
+                    'sql': 'select * from european_countries_e where area > 0'
+                }
+            }]
+        };
+
+        //Carto数据库
+        var cartoDBSource = new ol.source.CartoDB({
+            account: 'documentation',  //要加载的模板的名称
+            config: mapConfig
+        });
+
+        /*//通过select切换Carto数据层
+        function setArea(n) {
+            mapConfig.layers[0].options.sql =
+                'select * from european_countries_e where area > ' + n;
+            cartoDBSource.setConfig(mapConfig);
+        }*/
+
+
+        /*document.getElementById('country-area').addEventListener('change', function() {
+            setArea(this.value);
+        });*/
+    </script>
+<script type="text/babel">
+    class Content extends React.Component{
+        constructor(){
+            super();
+            this.setArea=this.setArea.bind(this);
+        }
+        componentDidMount(){
+            var map = new ol.Map({
+                //加载底图和carto数据
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM()
+                    }),
+                    new ol.layer.Tile({
+                        source: cartoDBSource
+                    })
+                ],
+                target: 'map',
+                view: new ol.View({
+                    center: new ol.proj.fromLonLat([90, 68]),
+                    zoom: 3
+                })
+            });
+        }
+        //通过select切换Carto数据层
+        setArea(e) {
+            //获取select上的值
+            var n=e.target.value;
+            mapConfig.layers[0].options.sql =
+                'select * from european_countries_e where area > ' + n;
+            cartoDBSource.setConfig(mapConfig);
+        }
+        render(){
+            return(
+                <div className="row-fluid">
+                    <div className="span12">
+                        <div id="map" className="map"></div>
+                            <form className="form-horizontal">
+                                <label>
+                                    Show countries larger than
+                                    <br/>&nbsp;
+                                    <select id="country-area" className="ui dropdown" onChange={this.setArea}>
+                                        <option value="0" default>0 ㎢</option>
+                                        <option value="5000">5000 ㎢</option>
+                                        <option value="10000">10000 ㎢</option>
+                                        <option value="50000">50000 ㎢</option>
+                                        <option value="100000">100000 ㎢</option>
+                                    </select>
+                                </label>
+                            </form>
+                    </div>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(
+        <Content/>,
+        document.getElementById("content")
+    )
+    //设置Semantic的UI
+    $('.ui.dropdown')
+        .dropdown()
+    ;
+</script>
+</body>
+</html>
