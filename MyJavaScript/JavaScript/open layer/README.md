@@ -6,6 +6,6 @@ Tiled ArcGIS MapServer：加载ArcGIS提供的图层
 View Animation：利用JS，对图层做一些旋转、漫游等操作  
 Canvas Tiles:添加格网  
 CartoDB source example:使用CartoDB数据库  
-GeoJson：加载自定义GeoJson数据  
+GeoJson：加载自定义GeoJson数据（貌似只有firefox效果比较好） 
 
 
